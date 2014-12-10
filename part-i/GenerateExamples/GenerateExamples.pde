@@ -78,6 +78,119 @@ void sierpinskiTriangleExamples()
 }
 
 
+void treeA()
+{  
+  LSystem lSystem = new LSystem("F");
+  lSystem.addRule('F',"F[+F]F[-F]F");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(5); 
+  describeSystem("Tree A",5,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(2,25.7);
+  
+  save("tree_a.png");
+}
+
+
+void treeB()
+{  
+  LSystem lSystem = new LSystem("F");
+  lSystem.addRule('F',"F[+F]F[-F][F]");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(5); 
+  describeSystem("Tree B",5,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(10,20);
+  
+  save("tree_b.png");
+}
+
+
+void treeC()
+{  
+  LSystem lSystem = new LSystem("F");
+  lSystem.addRule('F',"FF-[-F+F+F]+[+F-F-F]");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(4); 
+  describeSystem("Tree C",4,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(10,22.5);
+  
+  save("tree_c.png");
+}
+
+void treeD()
+{  
+  LSystem lSystem = new LSystem("X");
+  lSystem.addRule('X',"F[+X]F[-X]+X");
+  lSystem.addRule('F',"FF");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(7); 
+  describeSystem("Tree D",7,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(2,20);
+  
+  save("tree_d.png");
+}
+
+
+void treeE()
+{  
+  LSystem lSystem = new LSystem("X");
+  lSystem.addRule('X',"F[+X][-X]FX");
+  lSystem.addRule('F',"FF");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(7); 
+  describeSystem("Tree E",7,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(2,25.7);
+  
+  save("tree_e.png");
+}
+
+void treeF()
+{  
+  LSystem lSystem = new LSystem("X");
+  lSystem.addRule('X',"F-[[X]+X]+F[+FX]-X");
+  lSystem.addRule('F',"FF");
+  
+  // Example with 2 iterations
+  resetMatrix();
+  background(0);  
+   
+  lSystem.produce(5); 
+  describeSystem("Tree F",5,lSystem);
+  
+  translate(width/2,height-150);
+  lSystem.draw(7,22.7);
+  
+  save("tree_f.png");
+}
 
  
 void setup()
@@ -90,7 +203,11 @@ void setup()
   textFont(f,16);
   
   
- sierpinskiTriangleExamples();
- 
- 
+ //sierpinskiTriangleExamples();
+ //treeA();
+ //treeB();
+ //treeC();
+ //treeD();
+ //treeE();
+ treeF();
 }
