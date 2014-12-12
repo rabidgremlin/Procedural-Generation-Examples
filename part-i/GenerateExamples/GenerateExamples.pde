@@ -192,6 +192,70 @@ void treeF()
   save("tree_f.png");
 }
 
+
+
+void animatedTree()
+{  
+  LSystem lSystem = new LSystem("X");
+  lSystem.addRule('X',"F[+X]F[-X]+X");
+  lSystem.addRule('F',"FF");
+  
+  
+  int frameCount=0;
+  
+  
+  for (int loop=0;loop< 7;loop ++)
+  {
+    lSystem.produce(loop);
+    
+    resetMatrix();
+    background(0);  
+     
+     
+    describeSystem("Tree D - Length: 3 Angle: 20",loop,lSystem);
+    
+    translate(width/2,height-150);
+    lSystem.draw(3,20);
+    
+    save("anim/atree_" + nf(frameCount++,4) + ".png");
+  }
+  
+  
+  lSystem.produce(7);
+  
+  for (int loop=20;loop< 50;loop+=2)
+  {
+    
+    
+    resetMatrix();
+    background(0);  
+     
+     
+    describeSystem("Tree D - Length: 3 Angle: " + loop,7,lSystem);
+    
+    translate(width/2,height-150);
+    lSystem.draw(3,loop);
+    
+    save("anim/atree_" + nf(frameCount++,4) + ".png");
+  }
+  
+  for (int loop=50;loop> 5;loop-=2)
+  {
+    
+    
+    resetMatrix();
+    background(0);  
+     
+     
+    describeSystem("Tree D - Length: 3 Angle: " + loop,7,lSystem);
+    
+    translate(width/2,height-150);
+    lSystem.draw(3,loop);
+    
+    save("anim/atree_" + nf(frameCount++,4) + ".png");
+  }
+}
+
  
 void setup()
 {
@@ -200,14 +264,16 @@ void setup()
   stroke(255);
   fill(96);
   f = createFont("Arial",16,true);
-  textFont(f,16);
+  textFont(f,20);
   
   
- //sierpinskiTriangleExamples();
- //treeA();
- //treeB();
- //treeC();
- //treeD();
- //treeE();
+ sierpinskiTriangleExamples();
+ treeA();
+ treeB();
+ treeC();
+ treeD();
+ treeE();
  treeF();
+ 
+ animatedTree();
 }
