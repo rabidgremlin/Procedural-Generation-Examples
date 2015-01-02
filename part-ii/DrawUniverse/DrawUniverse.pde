@@ -1,6 +1,6 @@
-int MAP_CENTER_X = 512;
-int MAP_CENTER_Y = 512;
-int GAL_CENTER_RADIUS = (512+230)/2;
+int MAP_CENTER_X = 1920/2;
+int MAP_CENTER_Y = 1080/2;
+int GAL_CENTER_RADIUS = (512+256)/2;
 int GAL_RADIUS = 256/2;
 int NUM_GALAXIES = 8;
 int SX = 0;
@@ -10,6 +10,7 @@ float[][] galaxyCenters = new float[NUM_GALAXIES][2];
 
 
 Table universe;
+Table universeCopy;
 
 void calcGalaxyCenters()
 {
@@ -18,8 +19,8 @@ void calcGalaxyCenters()
 
  for(int loop=0;loop<NUM_GALAXIES;loop++)
  {
-   galaxyCenters[loop][SX] = radius*sin(angle*loop) +  MAP_CENTER_X;
-   galaxyCenters[loop][SY] = radius*cos(angle*loop) +  MAP_CENTER_Y;   
+   galaxyCenters[loop][SX] = radius*sin(angle*loop+radians(180)) +  MAP_CENTER_X;
+   galaxyCenters[loop][SY] = radius*cos(angle*loop+radians(180)) +  MAP_CENTER_Y;   
  }
   
 }
@@ -27,7 +28,7 @@ void calcGalaxyCenters()
 void drawSectors()
 {
   noFill();
-  stroke(24,24,24);
+  stroke(18,18,18);
   ellipse(MAP_CENTER_X,MAP_CENTER_Y,GAL_CENTER_RADIUS*2,GAL_CENTER_RADIUS*2);
    
     
@@ -61,12 +62,23 @@ void drawStars()
     
     
     // use productivity as size
-    float scale = (float)productivity / 10000;
+    float scale = (float)productivity / 9000;
+    if (scale <1)
+    {
+      scale =1;
+    }
     
     // tweak color based on gov type
-    float c = (float)255*0.5*govtype_id;
+    float c = (float)192+ 64.0/8*govtype_id;
     
     fill(c,c,c);
+    
+    // highlight LAVE
+    if (galaxyNum == 0 && systemNum == 7)
+    {
+      fill(0,255,0);
+      scale = 3;
+    }
     
     ellipse(galaxyCenters[galaxyNum][SX]-GAL_RADIUS+x,galaxyCenters[galaxyNum][SY]-GAL_RADIUS+y,scale,scale);
   }  
@@ -80,40 +92,87 @@ void drawInfo()
 
 
   textAlign(CENTER);
-  text("Map of Elite Universe", MAP_CENTER_X, MAP_CENTER_Y);
+  text("Map of Elite's universe", MAP_CENTER_X, MAP_CENTER_Y);
   
   textFont(font, 12);
   text("https://github.com/rabidgremlin/Procedural-Generation-Examples", MAP_CENTER_X, MAP_CENTER_Y+30);
+  
+  textFont(font, 20);
+  
+  for(int loop=0; loop < 8; loop++)
+  {
+    text("Galaxy " + (loop+1) ,galaxyCenters[loop][SX],galaxyCenters[loop][SY]-GAL_RADIUS-5);  
+  }
+  //text("Galaxy 2",galaxyCenters[1][SX],galaxyCenters[1][SY]-GAL_RADIUS-5);
+}
+
+void drawJumpLanes()
+{
+  
+  
+  for (TableRow fromRow : universeCopy.rows()) 
+  {    
+    int fromGalaxyNum = fromRow.getInt("galaxy_num")-1;
+    int fromSystemNum = fromRow.getInt("system_num");
+    int fromX = fromRow.getInt("x");
+    int fromY = fromRow.getInt("y");
+    String fromName = fromRow.getString("name");
+    
+    print("------------------" + fromName);
+    
+     
+    for (TableRow row : universe.rows()) 
+    {      
+      int galaxyNum = row.getInt("galaxy_num")-1;
+      int systemNum = row.getInt("system_num");
+      
+      if ( galaxyNum == fromGalaxyNum && systemNum != fromSystemNum)
+      {
+        int x = row.getInt("x");
+        int y = row.getInt("y");
+        String name = fromRow.getString("name");
+        
+        // formula from txtelite code        
+        float distance = 4 * sqrt(((fromX - x)*(fromX - x) + (fromY -y)*(fromY - y) / 4));
+        
+        if (distance <= 70)
+        {
+          println("Dist from " + fromName + " to " + name + " is " + distance);
+          
+          stroke(8,0,64,4);
+          strokeWeight(40);
+          line(galaxyCenters[galaxyNum][SX]-GAL_RADIUS+fromX,galaxyCenters[galaxyNum][SY]-GAL_RADIUS+fromY,galaxyCenters[galaxyNum][SX]-GAL_RADIUS+x,galaxyCenters[galaxyNum][SY]-GAL_RADIUS+y);
+          
+          stroke(0,0,128,64);
+          strokeWeight(1);
+          line(galaxyCenters[galaxyNum][SX]-GAL_RADIUS+fromX,galaxyCenters[galaxyNum][SY]-GAL_RADIUS+fromY,galaxyCenters[galaxyNum][SX]-GAL_RADIUS+x,galaxyCenters[galaxyNum][SY]-GAL_RADIUS+y);
+        }
+         
+      }
+    }
+  }
+  
 }
 
 void setup() {
     
-  size(1024, 1024);
+  size(1920, 1080);
   background(0);
+  noLoop();
+  smooth(4);
   
   universe = loadTable("universe.csv", "header");
+  universeCopy = loadTable("universe.csv", "header");
   
   calcGalaxyCenters();
   drawSectors();
   
+  drawJumpLanes();
 
   drawStars();
   
   drawInfo();
  
   
-  
-  println(universe.getRowCount() + " total rows in table"); 
-
-  for (TableRow row : universe.rows()) {
-    
-    int galaxyNum = row.getInt("galaxy_num");
-    int systemNum = row.getInt("system_num");
-    String name = row.getString("name");
-    int x = row.getInt("x");
-    int y = row.getInt("y");
-       
-    println(name + " (" + systemNum + ")");
-  }
-  
+  save("EliteUniverse.png"); 
 }
