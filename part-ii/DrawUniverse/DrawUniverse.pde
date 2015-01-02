@@ -15,7 +15,7 @@ Table universeCopy;
 void calcGalaxyCenters()
 {
  float radius=GAL_CENTER_RADIUS;
- float angle=TWO_PI/(float)NUM_GALAXIES;
+ float angle=-TWO_PI/(float)NUM_GALAXIES;
 
  for(int loop=0;loop<NUM_GALAXIES;loop++)
  {
