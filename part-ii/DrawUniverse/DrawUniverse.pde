@@ -95,7 +95,7 @@ void drawInfo()
   text("Map of Elite's universe", MAP_CENTER_X, MAP_CENTER_Y);
   
   textFont(font, 12);
-  text("https://github.com/rabidgremlin/Procedural-Generation-Examples", MAP_CENTER_X, MAP_CENTER_Y+30);
+  text("http://blog.rabidgremlin.com/2015/01/13/procedural-content-generation-creating-a-universe", MAP_CENTER_X, MAP_CENTER_Y+30);
   
   textFont(font, 20);
   
